@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#3b82f6" />
+      <stop offset="100%" stop-color="#8b5cf6" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="url(#bg2)" />
+  
+  <!-- Content -->
+  <text x="50%" y="380" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="120" fill="#ffffff">TRACK PRICES</text>
+  <text x="50%" y="540" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="140" fill="#fde047">SAVE MONEY</text>
+  
+  <!-- Accent Line -->
+  <rect x="412" y="660" width="200" height="20" rx="10" fill="#ffffff" />
+  
+  <text x="50%" y="800" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="45" fill="#ffffff" fill-opacity="0.9">100% Automated Price Tracking</text>
+</svg>

@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <defs>
+    <linearGradient id="bg1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#1e3a8a" />
+    </linearGradient>
+  </defs>
+  <!-- Background -->
+  <rect width="1024" height="1024" fill="url(#bg1)" />
+  
+  <!-- Text Content -->
+  <text x="50%" y="280" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="80" fill="#ffffff" letter-spacing="4">AI-POWERED</text>
+  <text x="50%" y="400" text-anchor="middle" font-family="sans-serif" font-weight="900" font-size="110" fill="#60a5fa" letter-spacing="2">DEAL SCOUT</text>
+  
+  <!-- Fake UI Card -->
+  <rect x="212" y="520" width="600" height="350" rx="40" fill="#ffffff" fill-opacity="0.1" stroke="#ffffff" stroke-width="4" stroke-opacity="0.2"/>
+  
+  <text x="50%" y="650" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="55" fill="#ffffff">Never miss a price drop</text>
+  <text x="50%" y="740" text-anchor="middle" font-family="sans-serif" font-weight="bold" font-size="55" fill="#ffffff">on your favorite brands</text>
+  
+  <rect x="362" y="810" width="300" height="12" rx="6" fill="#3b82f6" />
+</svg>
