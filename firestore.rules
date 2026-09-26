@@ -1,0 +1,104 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isDocOwner() {
+      return isAuthenticated() && request.auth.uid == resource.data.userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() && (
+        request.auth.token.email == "sanjithdevarapu@gmail.com" || 
+        (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
+         get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
+      );
+    }
+
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+    
+    function isValidEmail(email) {
+      return email is string && email.matches("^[a-zA-Z0-9._%+-]+@?[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+    function isValidUser(data) {
+      return hasRequiredFields(['uid', 'email']) &&
+             data.uid == request.auth.uid &&
+             data.email is string &&
+             (!('displayName' in data) || (data.displayName is string && data.displayName.size() < 100)) &&
+             (!('photoURL' in data) || (data.photoURL is string && data.photoURL.size() < 1000)) &&
+             (!('lastLogin' in data) || data.lastLogin is string) &&
+             (!('role' in data) || data.role is string);
+    }
+    
+    function isValidSavedDeal(data) {
+      return hasRequiredFields(['userId', 'dealId', 'title', 'newPrice', 'oldPrice']) &&
+             data.userId == request.auth.uid &&
+             data.dealId is string && data.dealId.size() > 0 && data.dealId.size() < 100 &&
+             data.title is string && data.title.size() > 0 && data.title.size() < 200 &&
+             data.newPrice is number && data.newPrice >= 0 &&
+             data.oldPrice is number && data.oldPrice >= 0 &&
+             (!('discountPercentage' in data) || data.discountPercentage is number) &&
+             (!('source' in data) || (data.source is string && data.source.size() < 100)) &&
+             (!('imageKeyword' in data) || (data.imageKeyword is string && data.imageKeyword.size() < 100)) &&
+             (!('imageUrl' in data) || (data.imageUrl is string && data.imageUrl.size() < 1000)) &&
+             (!('highlight' in data) || data.highlight is bool) &&
+             (!('hasPriceDropped' in data) || data.hasPriceDropped is bool) &&
+             (!('lastCheckedAt' in data) || data.lastCheckedAt is string) &&
+             (!('savedAt' in data) || data.savedAt is string);
+    }
+
+    function isValidPriceAlert(data) {
+      return hasRequiredFields(['userId', 'keyword', 'targetPrice', 'isActive']) &&
+             data.userId == request.auth.uid &&
+             data.keyword is string && data.keyword.size() > 0 && data.keyword.size() < 100 &&
+             data.targetPrice is number && data.targetPrice > 0 &&
+             data.isActive is bool;
+    }
+
+    // ===============================================================
+    // Rules
+    // ===============================================================
+    
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && isValidUser(request.resource.data);
+      allow update: if isOwner(userId) && isValidUser(request.resource.data) &&
+                    request.resource.data.uid == resource.data.uid &&
+                    (!('role' in request.resource.data) || request.resource.data.role == resource.data.role || isAdmin());
+      allow delete: if false; // Users shouldn't be deleted via client here
+    }
+
+    match /savedDeals/{docId} {
+      // Only the user who saved the deal can read/write it
+      allow read: if (isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid) || docId.matches(request.auth.uid + "_.*")) || isAdmin();
+      allow create: if isAuthenticated() && isValidSavedDeal(request.resource.data);
+      allow update: if isAuthenticated() && isDocOwner() && isValidSavedDeal(request.resource.data) &&
+                    request.resource.data.userId == resource.data.userId;
+      allow delete: if isAuthenticated() && isDocOwner();
+    }
+
+    match /priceAlerts/{docId} {
+      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow create: if isAuthenticated() && isValidPriceAlert(request.resource.data);
+      allow update: if isAuthenticated() && isDocOwner() && isValidPriceAlert(request.resource.data) &&
+                    request.resource.data.userId == resource.data.userId;
+      allow delete: if isAuthenticated() && isDocOwner();
+    }
+  }
+}

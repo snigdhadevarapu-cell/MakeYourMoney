@@ -1,0 +1,62 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user profile in the Save Money app.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "User ID matching the auth token" },
+        "email": { "type": "string", "format": "email", "description": "User's email" },
+        "displayName": { "type": "string", "description": "User's display name" },
+        "photoURL": { "type": "string", "description": "User's avatar URL" },
+        "createdAt": { "type": "timestamp", "description": "Time the profile was created" }
+      },
+      "required": ["uid", "email"]
+    },
+    "SavedDeal": {
+      "title": "SavedDeal",
+      "description": "A deal saved by the user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The UID of the user who saved the deal" },
+        "dealId": { "type": "string", "description": "The unique ID of the deal" },
+        "title": { "type": "string", "description": "Product Title" },
+        "oldPrice": { "type": "number", "description": "Original price in INR" },
+        "newPrice": { "type": "number", "description": "New discounted price in INR" },
+        "discountPercentage": { "type": "number", "description": "Percentage discount" },
+        "source": { "type": "string", "description": "Store source" },
+        "imageKeyword": { "type": "string", "description": "Keyword for the image" },
+        "highlight": { "type": "boolean", "description": "If it was a top pick" },
+        "savedAt": { "type": "timestamp", "description": "When the deal was saved" }
+      },
+      "required": ["userId", "dealId", "title", "newPrice", "oldPrice"]
+    },
+    "PriceAlert": {
+      "title": "PriceAlert",
+      "description": "A price drop alert configured by the user.",
+      "type": "object",
+      "properties": {
+        "userId": { "type": "string", "description": "The UID of the user creating the alert" },
+        "keyword": { "type": "string", "description": "Product keyword or category" },
+        "targetPrice": { "type": "number", "description": "Target price in INR" },
+        "isActive": { "type": "boolean", "description": "Whether the alert is active" },
+        "createdAt": { "type": "timestamp" }
+      },
+      "required": ["userId", "keyword", "targetPrice", "isActive"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles"
+    },
+    "/savedDeals/{dealId}": {
+      "schema": { "$ref": "#/entities/SavedDeal" },
+      "description": "Deals saved by users"
+    },
+    "/priceAlerts/{alertId}": {
+      "schema": { "$ref": "#/entities/PriceAlert" },
+      "description": "User price alerts"
+    }
+  }
+}
