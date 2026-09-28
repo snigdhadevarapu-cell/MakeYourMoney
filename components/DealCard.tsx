@@ -408,7 +408,7 @@ export function DealCard({ deal }: DealCardProps) {
               setShowModal(true);
             }
           }}
-          className="bg-white rounded-2xl border border-slate-200/90 overflow-hidden shadow-xs hover:shadow-md transition-shadow flex flex-col h-full cursor-pointer relative"
+          className="bg-white rounded-3xl border border-slate-200/80 overflow-hidden shadow-xs hover:shadow-md transition-all flex flex-col h-full cursor-pointer relative"
         >
           {/* Double-tap Heart Burst Feedback */}
           {showHeartBurst && (
@@ -471,52 +471,25 @@ export function DealCard({ deal }: DealCardProps) {
               )}
             </div>
 
-            {/* Top Right: Highlight Badge, Bell Alert Button & Quick Share Button */}
-            <div className="absolute top-2.5 sm:top-3 right-2.5 sm:right-3 flex items-center gap-2 z-10" onClick={(e) => e.stopPropagation()}>
-              {deal.highlight && (
-                <div className="bg-amber-500 text-white px-2.5 py-1 rounded-xl text-xs font-bold shadow-xs flex items-center gap-1">
-                  <Sparkles className="w-3.5 h-3.5" />
-                  Top Pick
+            {/* Top Right: Heart Save Button & Red Oval Discount Badge matching the photo */}
+            <div className="absolute top-2.5 sm:top-3 right-2.5 sm:right-3 flex items-center gap-1.5 z-10" onClick={(e) => e.stopPropagation()}>
+              {/* Quick Heart Save Button */}
+              <button
+                onClick={(e) => toggleSave(e)}
+                disabled={isSaving}
+                title={isSaved ? "Remove from Saved Deals" : "Save Deal"}
+                className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-white/95 hover:bg-white shadow-xs flex items-center justify-center cursor-pointer transition-all active:scale-95 border border-slate-200/60"
+              >
+                <Heart className={`w-4 h-4 transition-colors ${isSaved ? 'text-rose-500 fill-rose-500' : 'text-slate-400 hover:text-rose-400'}`} />
+              </button>
+
+              {/* Red Oval Pill Discount Badge */}
+              {deal.discountPercentage > 0 && (
+                <div className="bg-[#ef4444] text-white px-2.5 py-0.5 rounded-full text-[11px] sm:text-xs font-bold shadow-xs flex items-center">
+                  <span>-{deal.discountPercentage}%</span>
                 </div>
               )}
-
-              {/* Quick Bell Price Alert Toggle Button (Medium Size) */}
-              <button
-                onClick={togglePriceAlert}
-                disabled={isAlerting}
-                title={hasAlert ? "Price Alert Active - Click to remove alert" : "Set Price Alert for this item"}
-                className={`h-9 px-2.5 sm:px-3 rounded-xl backdrop-blur-md flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer border text-xs font-bold ${
-                  hasAlert
-                    ? 'bg-amber-500 border-amber-400 text-white scale-102 shadow-md shadow-amber-500/30'
-                    : 'bg-white/95 hover:bg-white border-slate-200/60 text-slate-700 hover:text-amber-600'
-                }`}
-              >
-                <Bell className={`w-4 h-4 ${hasAlert ? 'fill-white animate-pulse' : ''}`} />
-                <span className="hidden sm:inline">{hasAlert ? 'Alert Active' : 'Alert'}</span>
-              </button>
-
-              {/* Quick Share Button (Medium Size) */}
-              <button
-                onClick={handleShare}
-                title={isCopied ? "Link Copied!" : "Share Deal"}
-                className={`h-9 w-9 sm:w-auto sm:px-3 rounded-xl backdrop-blur-md flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer border text-xs font-bold ${
-                  isCopied
-                    ? 'bg-emerald-600 border-emerald-500 text-white scale-102'
-                    : 'bg-white/95 hover:bg-white border-slate-200/60 text-slate-700 hover:text-blue-600'
-                }`}
-              >
-                {isCopied ? <Check className="w-4 h-4 text-white" /> : <Share2 className="w-4 h-4" />}
-                <span className="hidden sm:inline">{isCopied ? 'Copied' : 'Share'}</span>
-              </button>
             </div>
-
-            {/* Discount Badge */}
-            {deal.discountPercentage > 0 && (
-              <div className="absolute bottom-2.5 sm:bottom-3 left-2.5 sm:left-3 bg-emerald-600 text-white px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-lg text-[11px] sm:text-xs font-black shadow-xs flex items-center gap-1">
-                <TrendingDown className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                {deal.discountPercentage}% OFF
-              </div>
-            )}
           </div>
 
           {/* Product Info */}
@@ -612,80 +585,50 @@ export function DealCard({ deal }: DealCardProps) {
                 </div>
               </div>
 
-              {/* Action Buttons (Medium Size, Spacious & Uncramped) */}
-              <div className="flex flex-col gap-2 pt-1" onClick={(e) => e.stopPropagation()}>
-                {/* Primary Row: Grab Deal + Save Button */}
-                <div className="flex items-center gap-2">
-                  <a
-                    href={getRetailerSearchUrl()}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex-1 h-10 px-4 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs sm:text-sm font-bold transition-all shadow-sm hover:shadow active:scale-98 flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <span>Grab Deal</span>
-                    <ExternalLink className="w-4 h-4" />
-                  </a>
+              {/* Store & Top Pick Tags matching screenshot: Found on: Amazon / Top Pick */}
+              <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
+                <span className="text-[11px] font-medium text-slate-500">
+                  Found on: <strong className="text-slate-700 font-semibold">{deal.source}</strong>
+                </span>
+                {deal.highlight && (
+                  <span className="text-[11px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md">
+                    Top Pick
+                  </span>
+                )}
+              </div>
 
-                  <button
-                    onClick={(e) => toggleSave(e)}
-                    disabled={isSaving}
-                    className={`h-10 px-3.5 sm:px-4 rounded-xl text-xs sm:text-sm font-bold transition-all border cursor-pointer active:scale-98 flex items-center justify-center gap-2 ${
-                      isSaved
-                        ? 'bg-blue-50 border-blue-200 text-blue-700'
-                        : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700'
-                    }`}
-                  >
-                    {isSaved ? (
-                      <>
-                        <Check className="w-4 h-4 text-blue-600" />
-                        <span>Saved</span>
-                      </>
-                    ) : (
-                      <>
-                        <Bookmark className="w-4 h-4 text-slate-500" />
-                        <span>Save</span>
-                      </>
-                    )}
-                  </button>
-                </div>
+              {/* Action Buttons: Full-width vibrant Blue Get Deal button matching screenshot */}
+              <div className="pt-1" onClick={(e) => e.stopPropagation()}>
+                <a
+                  href={getRetailerSearchUrl()}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-white rounded-2xl text-xs sm:text-sm font-bold transition-all shadow-xs active:scale-98 flex items-center justify-center gap-1.5 cursor-pointer"
+                >
+                  <span>Get Deal</span>
+                  <ExternalLink className="w-3.5 h-3.5" />
+                </a>
 
-                {/* Secondary Row: Quick Price Alert + Share Buttons */}
-                <div className="grid grid-cols-2 gap-2">
+                {/* Secondary subtle action buttons */}
+                <div className="flex items-center justify-between gap-2 mt-2 pt-2 border-t border-slate-100/70">
                   <button
                     onClick={togglePriceAlert}
                     disabled={isAlerting}
-                    title={hasAlert ? "Price Alert Active - Click to remove alert" : "Set Price Alert for this item"}
-                    className={`h-9 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 ${
-                      hasAlert
-                        ? 'bg-amber-50 border-amber-300 text-amber-700 shadow-2xs'
-                        : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-amber-600'
+                    className={`text-[11px] font-semibold flex items-center gap-1 cursor-pointer transition-colors ${
+                      hasAlert ? 'text-amber-600 font-bold' : 'text-slate-400 hover:text-slate-600'
                     }`}
                   >
-                    <Bell className={`w-3.5 h-3.5 ${hasAlert ? 'fill-amber-500 text-amber-600' : 'text-slate-500'}`} />
-                    <span>{hasAlert ? 'Alert Active' : 'Set Alert'}</span>
+                    <Bell className={`w-3.5 h-3.5 ${hasAlert ? 'fill-amber-500' : ''}`} />
+                    <span>{hasAlert ? 'Alert Active' : 'Track Price'}</span>
                   </button>
 
                   <button
                     onClick={handleShare}
-                    title={isCopied ? "Link Copied to Clipboard!" : "Share Deal via Web Share or Clipboard"}
-                    className={`h-9 px-3 rounded-xl text-xs font-bold transition-all border flex items-center justify-center gap-1.5 cursor-pointer active:scale-98 ${
-                      isCopied
-                        ? 'bg-emerald-50 border-emerald-300 text-emerald-700 shadow-2xs'
-                        : 'bg-slate-50 hover:bg-slate-100 border-slate-200 text-slate-700 hover:text-blue-600'
-                    }`}
+                    className="text-[11px] font-semibold text-slate-400 hover:text-slate-600 flex items-center gap-1 cursor-pointer transition-colors"
                   >
-                    {isCopied ? (
-                      <>
-                        <Check className="w-3.5 h-3.5 text-emerald-600" />
-                        <span className="text-emerald-700">Copied</span>
-                      </>
-                    ) : (
-                      <>
-                        <Share2 className="w-3.5 h-3.5" />
-                        <span>Share</span>
-                      </>
-                    )}
+                    <Share2 className="w-3.5 h-3.5" />
+                    <span>{isCopied ? 'Copied!' : 'Share'}</span>
                   </button>
                 </div>
               </div>

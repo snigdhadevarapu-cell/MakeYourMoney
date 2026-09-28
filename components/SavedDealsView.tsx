@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { auth, db } from '../firebase';
 import { collection, query, where, onSnapshot, deleteDoc, doc } from 'firebase/firestore';
-import { Bookmark, ExternalLink, Trash2, Tag } from 'lucide-react';
+import { Bookmark, ExternalLink, Trash2, Tag, Heart } from 'lucide-react';
 import { Deal } from '../types';
 
 interface SavedDealItem extends Deal {
@@ -122,13 +122,13 @@ export function SavedDealsView() {
 
   if (savedDeals.length === 0) {
     return (
-      <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center max-w-lg mx-auto mt-6 shadow-xs">
-        <div className="w-16 h-16 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto mb-4 border border-blue-100">
-          <Bookmark className="w-8 h-8" />
+      <div className="py-24 text-center max-w-sm mx-auto">
+        <div className="w-12 h-12 text-slate-300 mx-auto mb-3 flex items-center justify-center">
+          <Heart className="w-8 h-8 text-slate-300 stroke-[1.5]" />
         </div>
-        <h3 className="text-lg font-bold text-slate-800 mb-2">No Saved Deals Yet</h3>
-        <p className="text-sm text-slate-500 leading-relaxed mb-6">
-          When you spot an attractive price or want to monitor a discount, click &ldquo;Save Deal&rdquo; on any card to keep it handy here.
+        <h3 className="text-base font-bold text-slate-800 mb-1">No saved deals yet.</h3>
+        <p className="text-xs text-slate-400 font-medium">
+          Click the heart icon on any deal to save it.
         </p>
       </div>
     );

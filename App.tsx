@@ -270,7 +270,7 @@ function MainApp({ user }: { user: User | AppUser }) {
       onTouchStart={handleTouchStart}
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
-      className={`auto-resizer-root size-theme-${deviceInfo.effectiveTheme} flex ${isPhone ? "flex-col" : "flex-col md:flex-row"} w-full bg-slate-100 font-sans text-slate-800 overflow-hidden select-none md:select-auto touch-pan-y`}
+      className={`auto-resizer-root size-theme-${deviceInfo.effectiveTheme} flex ${isPhone ? "flex-col" : "flex-col md:flex-row"} w-full bg-[#f8fafc] font-sans text-slate-800 overflow-hidden select-none md:select-auto touch-pan-y`}
     >
       <Sidebar 
         activeCategory={activeCategory} 
@@ -340,11 +340,11 @@ function MainApp({ user }: { user: User | AppUser }) {
           <header className="flex flex-col gap-2.5 sm:gap-3 mb-3 sm:mb-4 shrink-0">
             <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 md:gap-4 items-stretch sm:items-center">
               <div className="flex-1 relative w-full md:max-w-2xl">
-                <Search className="w-4 h-4 sm:w-5 sm:h-5 absolute left-3.5 sm:left-5 top-1/2 -translate-y-1/2 text-slate-400" />
+                <Search className="w-4 h-4 sm:w-4.5 sm:h-4.5 absolute left-3.5 sm:left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                 <input
                   type="text"
-                  className="w-full h-full min-h-[42px] sm:min-h-[46px] md:min-h-[50px] pl-[38px] sm:pl-[50px] pr-4 sm:pr-5 py-2.5 sm:py-3 bg-white border border-slate-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs sm:text-sm md:text-[15px] text-slate-800 placeholder:text-slate-400 font-medium shadow-2xs"
-                  placeholder={`Search ${activeCategory.toLowerCase()} deals & top offers...`}
+                  className="w-full h-11 pl-10 pr-4 bg-white border border-slate-200/80 rounded-2xl focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 font-medium shadow-2xs"
+                  placeholder="Search electronics by brand or category..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   onKeyDown={(e) => e.key === 'Enter' && handleScan(true)}
@@ -355,17 +355,17 @@ function MainApp({ user }: { user: User | AppUser }) {
                 <button
                   onClick={() => handleScan(true)}
                   disabled={isScanning}
-                  className="flex-1 sm:flex-initial py-2.5 sm:py-3 px-5 sm:px-6 md:px-8 bg-gradient-to-br from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 active:scale-95 text-white rounded-xl font-bold text-xs md:text-[14px] uppercase tracking-wide flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed border-none cursor-pointer shadow-md hover:shadow-lg transition-all"
+                  className="flex-1 sm:flex-initial h-11 px-5 sm:px-6 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-2 disabled:opacity-75 disabled:cursor-not-allowed border-none cursor-pointer shadow-xs transition-all"
                 >
                   {isScanning ? (
                     <>
-                      <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin" />
-                      Scanning
+                      <Loader2 className="w-4 h-4 animate-spin" />
+                      <span>Scanning...</span>
                     </>
                   ) : (
                     <>
                       <Sparkles className="w-4 h-4" />
-                      AI Scan
+                      <span>AI SCAN</span>
                     </>
                   )}
                 </button>
@@ -458,9 +458,14 @@ function MainApp({ user }: { user: User | AppUser }) {
               transition={{ type: "spring", stiffness: 350, damping: 28 }}
               className="w-full h-full"
             >
-              <div className="text-base sm:text-lg md:text-xl font-bold mb-3 sm:mb-4 md:mb-5 text-slate-800 flex flex-col sm:flex-row justify-between items-start sm:items-end gap-1.5 sm:gap-0">
-                <span className="leading-tight">
-                {activeCategory === "Hot Deals" ? "🔥 Trending Hot Deals" : 
+              <div className="text-base sm:text-lg md:text-xl font-bold mb-3 sm:mb-4 text-slate-900 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-1.5">
+                <span className="leading-tight flex items-center gap-2">
+                {activeCategory === "Hot Deals" ? (
+                  <>
+                    <span className="text-amber-500">🔥</span>
+                    <span>Trending Now</span>
+                  </>
+                ) : 
                  activeCategory === "Saved Deals" ? "My Saved Deals" : 
                  activeCategory === "Price Alerts" ? "My Price Alerts" : 
                  activeCategory === "Account" ? "Account Details" : 
@@ -471,25 +476,8 @@ function MainApp({ user }: { user: User | AppUser }) {
                  `Top ${activeCategory} Deals`}
                 </span>
                 {!isPersonalTab && (
-                  <div className="flex flex-wrap items-center gap-2">
-                    {totalSavings > 0 && (
-                      <span className="text-[11px] font-bold px-2 py-0.5 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200/60 inline-flex items-center gap-1 shadow-2xs">
-                        <TrendingDown className="w-3 h-3" /> Save ₹{totalSavings.toLocaleString('en-IN')}
-                      </span>
-                    )}
-                    <span className="text-xs text-slate-500 font-normal flex items-center gap-1.5">
-                      <span>{processedDeals.length} deals ready</span>
-                      <span>•</span>
-                      <button
-                        onClick={() => handleScan(true)}
-                        disabled={isScanning}
-                        title="Live Sync Deals"
-                        className="p-1 text-slate-400 hover:text-blue-600 rounded-md hover:bg-slate-200/60 transition-colors flex items-center gap-1 text-xs font-medium cursor-pointer"
-                      >
-                        <RefreshCw className={`w-3.5 h-3.5 ${isScanning ? 'animate-spin text-blue-600' : ''}`} />
-                        <span className="hidden md:inline">Sync</span>
-                      </button>
-                    </span>
+                  <div className="flex items-center gap-2 text-xs text-slate-400 font-normal">
+                    <span>Scanning 14 major retailers • Updated just now</span>
                   </div>
                 )}
               </div>

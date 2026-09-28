@@ -95,19 +95,16 @@ Ask me anything about:
   return (
     <div className="flex flex-col h-[calc(100vh-140px)] md:h-[calc(100vh-160px)] bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs">
       {/* Top Header */}
-      <div className="px-6 py-4 border-b border-slate-100 flex items-center justify-between shrink-0 bg-slate-50/50">
+      <div className="px-6 py-3.5 border-b border-slate-100 flex items-center justify-between shrink-0 bg-white">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-white shadow-sm">
-            <Bot className="w-5 h-5" />
+          <div className="w-8 h-8 rounded-full bg-blue-600 flex items-center justify-center text-white shadow-xs">
+            <Bot className="w-4 h-4 text-white" />
           </div>
           <div>
-            <h3 className="font-bold text-base text-slate-800 flex items-center gap-2">
-              Make your money AI Scout
-              <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-100 text-blue-700 flex items-center gap-1">
-                <Globe className="w-3 h-3 text-blue-600" /> Google Search Grounded
-              </span>
+            <h3 className="font-bold text-sm text-slate-800 flex items-center gap-2">
+              Gemini Assistant
             </h3>
-            <p className="text-xs text-slate-400">Powered by Gemini 3.5 Flash with live web retailer data</p>
+            <p className="text-[11px] text-slate-400">Analyze products, track deals & plan budgets (Max 8GB limit)</p>
           </div>
         </div>
       </div>
@@ -213,7 +210,7 @@ Ask me anything about:
       </div>
 
       {/* Input Box */}
-      <div className="p-4 border-t border-slate-200 shrink-0 bg-white">
+      <div className="p-3 border-t border-slate-200/80 shrink-0 bg-white">
         <form
           onSubmit={(e) => {
             e.preventDefault();
@@ -223,19 +220,19 @@ Ask me anything about:
         >
           <input
             type="text"
-            placeholder="Ask about live electronics prices, sales, or product comparisons..."
+            placeholder="Ask a question or upload a receipt to analyze..."
             value={input}
             onChange={(e) => setInput(e.target.value)}
             disabled={isThinking}
-            className="flex-1 h-12 px-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium"
+            className="flex-1 h-11 px-4 bg-slate-50 border border-slate-200/80 rounded-xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 font-medium"
           />
           <button
             type="submit"
             disabled={isThinking || !input.trim()}
-            className="h-12 px-5 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl font-bold text-sm transition-colors flex items-center justify-center gap-1.5 shadow-sm shadow-blue-500/20"
+            className="h-11 px-4 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl font-bold text-xs sm:text-sm transition-colors flex items-center justify-center gap-1.5 shadow-xs"
           >
             <span>Ask</span>
-            <Send className="w-4 h-4" />
+            <Send className="w-3.5 h-3.5" />
           </button>
         </form>
       </div>

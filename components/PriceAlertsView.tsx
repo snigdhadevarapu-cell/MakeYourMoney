@@ -156,85 +156,70 @@ export function PriceAlertsView() {
 
   return (
     <div className="space-y-6 max-w-4xl">
-      {/* Create Alert Box */}
-      <div className="bg-white rounded-2xl border border-slate-200/90 p-5 md:p-6 shadow-xs">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center border border-violet-100">
-            <Bell className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="font-bold text-base text-slate-800">Set Automatic Price Drop Alert</h3>
-            <p className="text-xs text-slate-500">
-              We scout Amazon, Flipkart, and Croma continuously and flag drops below your target.
-            </p>
-          </div>
+      {/* Create New Alert Card matching the reference screenshot */}
+      <div className="bg-white rounded-3xl border border-slate-200/80 p-6 md:p-7 shadow-xs">
+        <div className="flex items-center gap-2 mb-4 text-slate-800 font-bold text-sm">
+          <Bell className="w-4 h-4 text-blue-600" />
+          <span>Create New Alert</span>
         </div>
 
-        <form onSubmit={handleCreateAlert} className="grid grid-cols-1 sm:grid-cols-12 gap-3">
-          <div className="sm:col-span-7">
+        <form onSubmit={handleCreateAlert} className="flex flex-col sm:flex-row items-center gap-3">
+          <div className="flex-1 w-full">
             <input
               type="text"
-              placeholder="e.g. Sony WH-1000XM5 or iPhone 15 Pro..."
+              placeholder="Product Name (e.g., iPhone 15)"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               required
-              className="w-full h-11 px-4 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+              className="w-full h-11 px-4 bg-slate-50/80 border border-slate-200/80 rounded-2xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
             />
           </div>
 
-          <div className="sm:col-span-3">
-            <div className="relative">
-              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold text-sm">₹</span>
-              <input
-                type="number"
-                placeholder="Target Price"
-                value={targetPrice}
-                onChange={(e) => setTargetPrice(e.target.value)}
-                required
-                min="1"
-                className="w-full h-11 pl-7 pr-3 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
-              />
-            </div>
+          <div className="w-full sm:w-48 relative">
+            <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 font-medium text-sm">₹</span>
+            <input
+              type="number"
+              placeholder="Target Price"
+              value={targetPrice}
+              onChange={(e) => setTargetPrice(e.target.value)}
+              required
+              min="1"
+              className="w-full h-11 pl-8 pr-4 bg-slate-50/80 border border-slate-200/80 rounded-2xl text-xs sm:text-sm text-slate-800 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+            />
           </div>
 
-          <div className="sm:col-span-2">
-            <button
-              type="submit"
-              disabled={isSubmitting || !keyword.trim() || !targetPrice}
-              className="w-full h-11 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-xl font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors shadow-xs"
-            >
-              <Plus className="w-4 h-4" />
-              <span>Add</span>
-            </button>
-          </div>
+          <button
+            type="submit"
+            disabled={isSubmitting || !keyword.trim() || !targetPrice}
+            className="w-full sm:w-auto h-11 px-6 bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white rounded-2xl font-bold text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all shadow-xs cursor-pointer shrink-0"
+          >
+            <Plus className="w-4 h-4" />
+            <span>Add Alert</span>
+          </button>
         </form>
       </div>
 
       {/* Existing Alerts List */}
       <div>
-        <div className="flex items-center justify-between text-xs font-semibold text-slate-500 px-1 mb-3">
-          <span>Active Trackers ({alerts.filter((a) => a.isActive).length}/{alerts.length})</span>
-          <span className="flex items-center gap-1 text-emerald-600">
-            <CheckCircle2 className="w-3.5 h-3.5" /> Retailer Bot Online
-          </span>
-        </div>
-
         {loading ? (
           <div className="py-12 text-center text-slate-400 text-sm">Loading price alerts...</div>
         ) : alerts.length === 0 ? (
-          <div className="bg-white rounded-2xl border border-slate-200 p-8 text-center text-slate-500">
-            <Sparkles className="w-8 h-8 text-slate-300 mx-auto mb-2" />
-            <p className="font-semibold text-slate-700">No active price alerts</p>
-            <p className="text-xs text-slate-400 mt-1">
-              Add your wishlist gadgets above to get notified the second a retailer drops their price.
-            </p>
+          <div className="py-16 text-center text-slate-400 text-sm font-medium">
+            You haven&apos;t set up any alerts yet.
           </div>
         ) : (
           <div className="space-y-3">
+            <div className="flex items-center justify-between text-xs font-semibold text-slate-500 px-1 mb-2">
+              <span>Active Trackers ({alerts.filter((a) => a.isActive).length}/{alerts.length})</span>
+              <span className="flex items-center gap-1 text-emerald-600">
+                <CheckCircle2 className="w-3.5 h-3.5" /> Retailer Bot Online
+              </span>
+            </div>
+
             {alerts.map((alert) => (
               <div
                 key={alert.id}
-                className="bg-white rounded-xl border border-slate-200 p-4 flex items-center justify-between gap-4 shadow-xs"
+                className="bg-white rounded-2xl border border-slate-200/80 p-4 flex items-center justify-between gap-4 shadow-xs"
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <div
