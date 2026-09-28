@@ -3,7 +3,7 @@ import { getAuth, GoogleAuthProvider, signInWithPopup, signOut } from "firebase/
 import { getFirestore } from "firebase/firestore";
 
 // Import the Firebase configuration
-import firebaseConfig from "../firebase-applet-config.json";
+import firebaseConfig from "./firebase-applet-config.json";
 
 // Initialize Firebase SDK
 export const app = initializeApp(firebaseConfig);
@@ -28,6 +28,7 @@ export const loginWithGoogle = async () => {
 
 export const logout = async () => {
   try {
+    localStorage.removeItem('makeyourmoney_demo_user');
     await signOut(auth);
   } catch (error) {
     console.error("Error logging out", error);

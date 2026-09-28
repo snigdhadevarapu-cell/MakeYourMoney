@@ -2,5 +2,5 @@
   "name": "Make your money",
   "description": "Find the best deals, track price drops, and manage your saved electronics deals with Make your money.",
   "requestFramePermissions": ["camera", "microphone", "geolocation", "clipboard-read", "clipboard-write"],
-  "majorCapabilities": []
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

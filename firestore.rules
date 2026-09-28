@@ -19,7 +19,7 @@ service cloud.firestore {
 
     function isAdmin() {
       return isAuthenticated() && (
-        request.auth.token.email == "sanjithdevarapu@gmail.com" || 
+        request.auth.token.email == "sanjithdevarapu6@gmail.com" ||
         (exists(/databases/$(database)/documents/users/$(request.auth.uid)) && 
          get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role == 'admin')
       );
@@ -94,7 +94,7 @@ service cloud.firestore {
     }
 
     match /priceAlerts/{docId} {
-      allow read: if (isAuthenticated() && resource.data.userId == request.auth.uid) || isAdmin();
+      allow read: if (isAuthenticated() && (resource == null || resource.data.userId == request.auth.uid || docId.matches("alert_" + request.auth.uid + "_.*"))) || isAdmin();
       allow create: if isAuthenticated() && isValidPriceAlert(request.resource.data);
       allow update: if isAuthenticated() && isDocOwner() && isValidPriceAlert(request.resource.data) &&
                     request.resource.data.userId == resource.data.userId;
