@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import path from 'path';
+import fs from 'fs';
 import { fileURLToPath } from 'url';
 import { GoogleGenAI } from '@google/genai';
 
@@ -12,6 +13,15 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.use(express.json());
+
+// Health check endpoints for Cloud Run container probes
+app.get('/health', (_req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
+
+app.get('/api/health', (_req, res) => {
+  res.status(200).json({ status: 'ok', uptime: process.uptime() });
+});
 
 // Initialize GoogleGenAI with telemetry headers
 const apiKey = process.env.GEMINI_API_KEY;
@@ -598,9 +608,12 @@ List store names, locations, specialty categories they carry, and in-store perks
 // ===============================================================
 async function startServer() {
   const isProd = process.env.NODE_ENV === 'production';
-  const PORT = 3000;
+  const PORT = Number(process.env.PORT) || 3000;
 
-  if (!isProd) {
+  const distPath = path.resolve(__dirname, 'dist');
+  const hasDist = fs.existsSync(distPath);
+
+  if (!isProd || !hasDist) {
     const { createServer: createViteServer } = await import('vite');
     const vite = await createViteServer({
       server: { middlewareMode: true },
@@ -608,9 +621,9 @@ async function startServer() {
     });
     app.use(vite.middlewares);
   } else {
-    app.use(express.static(path.resolve(__dirname, 'dist')));
+    app.use(express.static(distPath));
     app.get('*', (_req, res) => {
-      res.sendFile(path.resolve(__dirname, 'dist', 'index.html'));
+      res.sendFile(path.join(distPath, 'index.html'));
     });
   }
 

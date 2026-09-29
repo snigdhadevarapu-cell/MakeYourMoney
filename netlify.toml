@@ -1,0 +1,53 @@
+[build]
+  command = "npm run build"
+  publish = "dist"
+  functions = "netlify/functions"
+
+[build.environment]
+  NODE_VERSION = "20"
+
+# Direct API routes to Netlify serverless functions
+[[redirects]]
+  from = "/api/deals/scan"
+  to = "/.netlify/functions/scan"
+  status = 200
+
+[[redirects]]
+  from = "/api/assistant/chat"
+  to = "/.netlify/functions/assistant"
+  status = 200
+
+[[redirects]]
+  from = "/api/stores/nearby"
+  to = "/.netlify/functions/stores"
+  status = 200
+
+[[redirects]]
+  from = "/api/health"
+  to = "/.netlify/functions/health"
+  status = 200
+
+[[redirects]]
+  from = "/health"
+  to = "/.netlify/functions/health"
+  status = 200
+
+# Fallback for all other routes to React SPA index.html
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security and cache headers for modern web app performance
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    Permissions-Policy = "camera=(self), microphone=(self), geolocation=(self)"
+
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"

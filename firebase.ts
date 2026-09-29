@@ -7,7 +7,19 @@ import firebaseConfig from "./firebase-applet-config.json";
 
 // Initialize Firebase SDK
 export const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app, firebaseConfig.firestoreDatabaseId);
+
+// Initialize Firestore safely: prioritize named database ID, fallback gracefully if quota/region restricted
+let firestoreInstance;
+try {
+  firestoreInstance = firebaseConfig.firestoreDatabaseId 
+    ? getFirestore(app, firebaseConfig.firestoreDatabaseId)
+    : getFirestore(app);
+} catch (err) {
+  console.warn("Falling back to default Firestore database due to region/quota error:", err);
+  firestoreInstance = getFirestore(app);
+}
+
+export const db = firestoreInstance;
 export const auth = getAuth(app);
 
 // Authentication helpers
