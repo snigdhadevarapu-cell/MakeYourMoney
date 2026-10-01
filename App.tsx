@@ -40,6 +40,7 @@ import { motion, AnimatePresence } from "motion/react";
 import { auth, db, loginWithGoogle } from "./firebase";
 import { doc, setDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // Ordered sequence of categories for mobile swipe gestures
 const CATEGORY_ORDER = [
@@ -757,5 +758,10 @@ export default function App() {
     );
   }
 
-  return <MainApp user={user} />;
+  return (
+    <>
+      <MainApp user={user} />
+      <SpeedInsights />
+    </>
+  );
 }
